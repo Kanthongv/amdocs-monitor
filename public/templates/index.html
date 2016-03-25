@@ -1,0 +1,21 @@
+<!--si no hay usuarios que mostrar, con la directiva ng-show comprobamos
+el array usuarios y mostramos un mensaje-->
+<p ng-show="enpoints.length == 0">No hay datos para mostrar</p>
+
+<!--creamos un campo de texto que nos servirá para buscar usuarios, simplemente
+le damos como ng-model el mismo que le demos al atributo filter en el loop de abajo,
+aparte de un buscador es un autocompletar, y más sencillo no puede ser-->
+<!-- Filtrar: <input type="text" ng-model="buscador"  />
+<ul class="large-12 columns">
+	<li class="panel callout radius" ng-repeat="usuario in usuarios | filter: buscador">
+		Nombre: {{ usuario.nombre}}, Web: {{ usuario.web }}, Edad: {{ usuario.edad }}, Profesión: {{ usuario.profesion }}
+	</li>
+</ul> -->
+
+<!-- Endpoint check view -->
+Filtrar: <input type="text" ng-model="buscador"  />
+<ul class="large-12 columns">
+	<li class="panel callout radius" ng-repeat="end in enpoints | filter: buscador">
+		Nombre: {{ end.name}}, URL: {{ end.url }}, Error: {{ end.firstErrorDate }}, Code: {{ end.httpCode }}, Status: {{ end.isOK }}
+	</li>
+</ul>

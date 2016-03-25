@@ -1,0 +1,8 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.movistar.com.ar/ws/ASMProxy/xsd">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <xsd:GenerarTicketRequest>
+         <xsd:Profile>IVR</xsd:Profile>
+      </xsd:GenerarTicketRequest>
+   </soapenv:Body>
+</soapenv:Envelope>
