@@ -7,8 +7,8 @@ exports.DBConnect = function() {
     db = new Datastore();
 }
 
-exports.insert = function(nameParam, urlParam, isOKParam, typeParam, envParam) {
-    var dataJSON = { name: nameParam, url: urlParam, type: typeParam, env: envParam, isOK: isOKParam, firstErrorDate: null, httpCode: 0, createdDate: new Date() };
+exports.insert = function(nameParam, ipParam, portParam, urlParam, isOKParam, typeParam, envParam) {
+    var dataJSON = { name: nameParam, ip: ipParam, port:portParam, url: urlParam, type: typeParam, env: envParam, isOK: isOKParam, firstErrorDate: null, httpCode: 0, createdDate: new Date() };
     console.log("Inserting: " + JSON.stringify(dataJSON));
 
     db.insert(dataJSON, function (err, newDoc) {   // Callback is optional

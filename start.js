@@ -1,5 +1,5 @@
 /*
-res
+resources
     http://www.cronmaker.com/
     https://github.com/ncb000gt/node-cron
 
@@ -12,60 +12,64 @@ var dbMod = require('./db-module');
 var front = require('./front-end');
 var cron = require('./crontask');
 
-//var cron = require('./global');
+var api = require('./api');
 
-var app = express();
+app = express();
 
 const SERVER_PORT = 9090;
 const OK = 'OK';
 const ERROR = 'ERROR';
 
-REFRESH_TIME = 30;
+const REFRESH_TIME = 30;
 
 response = '';
 
 var urls = [ {name:'Internet', type: 'none', url:'http://www.google.com'} ,
 
              {name:'DESA', type: 'none', env:'DESA', url:'http://10.0.0.234:7100/sbconsole'},
-             {name:'DESA - ASM', type: 'ASM', env:'DESA', url:'http://10.0.0.234:7101/ASM/proxy/asm_PX'},
+             {name:'DESA - ASM', type: 'ASM', env:'DESA', url:'http://10.0.0.234:7101/ASM/proxy/asm_PX', ip:'10.0.0.234', port:'7101'},
 
              {name:'TEST', type: 'none', env:'TEST', url:'http://10.0.0.234:8100/sbconsole'},
-             {name:'TEST - ASM', type: 'ASM', env:'TEST', url:'http://10.0.0.234:8101/ASM/proxy/asm_PX'},
+             {name:'TEST - ASM', type: 'ASM', env:'TEST', url:'http://10.0.0.234:8101/ASM/proxy/asm_PX', ip:'10.0.0.234', port:'8101'},
 
              {name:'UAT_A', type: 'none', env:'UAT', url:'http://localhost:7011/sbconsole'},
-             {name:'UAT_A - ASM', type: 'ASM', env:'UAT', url:'http://localhost:7012/ASM/proxy/asm_PX'},
+             {name:'UAT_A - ASM', type: 'ASM', env:'UAT', url:'http://localhost:7012/ASM/proxy/asm_PX', ip:'localhost', port:'7012'},
 
              {name:'UAT_B', type: 'none', env:'UAT', url:'http://localhost:11079/sbconsole'},
-             {name:'UAT_B - ASM', type: 'ASM', env:'UAT', url:'http://localhost:7010/ASM/proxy/asm_PX'},
+             {name:'UAT_B - ASM', type: 'ASM', env:'UAT', url:'http://localhost:11080/ASM/proxy/asm_PX', ip:'localhost', port:'11080'},
 
              {name:'UAT_D', type: 'none', env:'UAT', url:'http://localhost:7041/sbconsole'},
-             {name:'UAT_D - ASM', type: 'ASM', env:'UAT', url:'http://localhost:7042/ASM/proxy/asm_PX'},
+             {name:'UAT_D - ASM', type: 'ASM', env:'UAT', url:'http://localhost:7042/ASM/proxy/asm_PX', ip:'localhost', port:'7042'},
 
              {name:'UAT_E', type: 'none', env:'UAT', url:'http://localhost:7030/sbconsole'},
-             {name:'UAT_E - ASM', type: 'ASM', env:'UAT', url:'http://localhost:7031/ASM/proxy/asm_PX'},
+             {name:'UAT_E - ASM', type: 'ASM', env:'UAT', url:'http://localhost:7031/ASM/proxy/asm_PX', ip:'localhost', port:'7031'},
 
              {name:'PET WLS OBC  - ADM', type: 'none', env:'PET', url:'http://localhost:3002/sbconsole'},
-             {name:'PET WLS OBC  - ASM', type: 'ASM', env:'PET', url:'http://localhost:3003/ASM/proxy/asm_PX'},
+             {name:'PET WLS OBC  - ASM', type: 'ASM', env:'PET', url:'http://localhost:3003/ASM/proxy/asm_PX', ip:'localhost', port:'3003'},
+
              {name:'PET WLS ONC  - ADM', type: 'none', env:'PET', url:'http://localhost:3006/sbconsole'},
-             {name:'PET WLS ONC  - ASM', type: 'ASM', env:'PET', url:'http://localhost:3007/ASM/proxy/asm_PX'},
+             {name:'PET WLS ONC  - ASM', type: 'ASM', env:'PET', url:'http://localhost:3007/ASM/proxy/asm_PX', ip:'localhost', port:'3007'},
 
              {name:'PET WLN ONC  - ADM', type: 'none', env:'PET', url:'http://localhost:3004/sbconsole'},
-             {name:'PET WLN ONC  - ASM', type: 'ASM', env:'PET', url:'http://localhost:3005/ASM/proxy/asm_PX'},
+             {name:'PET WLN ONC  - ASM', type: 'ASM', env:'PET', url:'http://localhost:3005/ASM/proxy/asm_PX', ip:'localhost', port:'3005'},
 
              {name:'PET WLN OBC  - ADM', type: 'none', env:'PET', url:'http://localhost:3000/sbconsole'},
-             {name:'PET WLN OBC  - ASM', type: 'ASM', env:'PET', url:'http://localhost:3001/ASM/proxy/asm_PX'},
+             {name:'PET WLN OBC  - ASM', type: 'ASM', env:'PET', url:'http://localhost:3001/ASM/proxy/asm_PX', ip:'localhost', port:'3001'},
 
              {name:'PET ASYNC - ADM', type: 'none', env:'PET', url:'http://localhost:3010/sbconsole'},
-             {name:'PET ASYNC - ASM', type: 'ASM', env:'PET', url:'http://localhost:3011/ASM/proxy/asm_PX'},
+             {name:'PET ASYNC - ASM', type: 'ASM', env:'PET', url:'http://localhost:3011/ASM/proxy/asm_PX', ip:'localhost', port:'3011'},
 
              {name:'PET COLIVING - ADM', type: 'none', env:'PET', url:'http://localhost:3014/sbconsole'},
-             {name:'PET COLIVING - ASM', type: 'ASM', env:'PET', url:'http://localhost:3015/ASM/proxy/asm_PX'},
+             {name:'PET COLIVING - ASM', type: 'ASM', env:'PET', url:'http://localhost:3015/ASM/proxy/asm_PX', ip:'localhost', port:'3015'},
 
-             {name:'PET SYNC - SOA', type: 'none', env:'PET', url:'http://localhost:3020/console/login/LoginForm.jsp'},
-             {name:'PET ASYNC - SOA', type: 'none', env:'PET', url:'http://localhost:3030/console/login/LoginForm.jsp'},
+             {name:'PET SYNC - SOA', type: 'none', env:'PET', url:'http://localhost:3020/em'},
+             {name:'PET ASYNC - SOA', type: 'none', env:'PET', url:'http://localhost:3030/em'},
 
-             {name:'UAT_A - SOA', type: 'none', env:'UAT', url:'http://localhost:7005/console/login/LoginForm.jsp'},
-             {name:'UAT_B - SOA', type: 'none', env:'UAT', url:'http://localhost:11011/console/login/LoginForm.jsp'},
+             {name:'DESA - SOA', type: 'none', env:'DESA', url:'http://10.0.0.234:7000/em'},
+             {name:'TEST - SOA', type: 'none', env:'TEST', url:'http://10.0.0.234:8000/em'},
+
+             {name:'UAT_A - SOA', type: 'none', env:'UAT', url:'http://localhost:7015/em'},
+             {name:'UAT_B - SOA', type: 'none', env:'UAT', url:'http://localhost:11011/em'},
              {name:'UAT_D - SOA', type: 'none', env:'UAT', url:'http://localhost:7051/em'},
              {name:'UAT_E - SOA', type: 'none', env:'UAT', url:'http://localhost:7032/em'},
            ];
@@ -106,6 +110,10 @@ app.get('/data', function(req, res) {
      res.end(front.buildHTML(response));
 });
 
+app.get('/#', function(req, res) {
+    res.redirect('public/index.html');
+
+});
 /*
     Server mservice
     Return a list of endpoints result
@@ -125,12 +133,9 @@ app.get('/list', function(req, res) {
 
 //Manual Refresh task
 app.get('/refresh', function(req, res) {
-     //res.writeHead(200, {'Content-Type': 'text/html'});
      console.log("Refresh Called!");
 
      handlerHttpRequestCron(req, res);
-
-    // res.end("OK");
      res.redirect('/');
 });
 
@@ -190,7 +195,7 @@ function send_ASM_request(urlParam, typeParam) {
 function handleInserts() {
     //Loop
     for (var value in urls) {
-        dbMod.insert(urls[value].name, urls[value].url, false, urls[value].type, urls[value].env);
+        dbMod.insert(urls[value].name,  urls[value].ip,  urls[value].port,  urls[value].url, false, urls[value].type, urls[value].env);
     }
 };
 
@@ -202,3 +207,75 @@ exports.handlerHttpRequestCron = function () {
         send_request(urls[value].url,  urls[value].type);
     }
 };
+
+
+// ===========================================
+
+var bodyParser = require('body-parser')
+
+//var multer = require('multer'); // v1.0.5
+//var upload = multer(); // for parsing multipart/form-data
+
+app.use(bodyParser.json()); // for parsing application/json
+//app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+
+app.post('/refreshBPT', api.refreshBPT)
+
+/*
+
+app.post('/refreshBPT', function(req, res) {
+     console.log("UpdateBPT Called!");
+
+     //      { "url": "http://www.google.com"}
+
+
+     //Check valid mime type
+     console.log("MIME Type: " + req.get('Content-Type'));
+     if (!req.is('application/json')) {
+         res.end("Invalid MIME type, only valid type is 'application/json'")
+         return
+     }
+
+     console.log("Body: " + req.body)
+
+     //The body is already a JSON object
+
+     var endpoint = req.body.url
+     if (typeof endpoint == 'undefined' || endpoint == null) {
+         console.log("JSON invalid");
+         res.end("JSON invalid");
+         return
+     }
+
+     var refreshBody =
+            '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:amd="http://www.movistar.com.ar/ws/schema/amdocs">'
+            + '<soapenv:Header/>'
+            + '<soapenv:Body>'
+            + '<amd:refresh/>'
+            + '</soapenv:Body>'
+            + '</soapenv:Envelope>'
+
+     request(
+         { url: endpoint, //URL to hit
+           method: 'POST', //Specify the method
+           headers: { //We can define headers too
+              'Content-Type': 'text/xml',
+           },
+           body: refreshBody //Set the body as a string
+         }
+         , function(error, response_call, body) {
+               var status = false;
+               var code = 0;
+               if (!error && response_call.statusCode == 200) {
+                    status = true;
+                    code = 200;
+               } if (!error) {
+                    code = response_call.statusCode;
+               } else {
+                    status = false;
+               }
+               console.log("URL " + endpoint + " is:" + status + " code: " + code + " \n Body:" + body)
+        });
+
+    res.end("Refresh request has been sent to: " + endpoint);
+});*/

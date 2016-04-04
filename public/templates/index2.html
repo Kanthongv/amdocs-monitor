@@ -19,6 +19,27 @@
   <p >Filtrado por  {{ buscador }} </p>
 </div>
 
+<!-- Modal -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Detalles del error</h4>
+      </div>
+      <div class="modal-body">
+        <p>{{ lastError }}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <!-- Filtrar: <input type="text" ng-model="buscador"  /> -->
 <table class="table table-bordered table-striped">
     <thead>
@@ -44,12 +65,13 @@
         <td>Codigo HTTP</td>
         <!-- <td>Estado</td> -->
         <td>
-          <a href="" ng-click="sortType = 'status'; sortReverse = !sortReverse">
+          <a href="" ng-click="sortType = 'isOK'; sortReverse = !sortReverse">
             Estado
-            <span ng-show="sortType == 'status' && !sortReverse" class="fa fa-caret-down"></span>
-            <span ng-show="sortType == 'status' && sortReverse" class="fa fa-caret-up"></span>
+            <span ng-show="sortType == 'isOK' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'isOK' && sortReverse" class="fa fa-caret-up"></span>
           </a>
         </td>
+        <td>BTP</td>
       </tr>
     </thead>
     <tbody>
@@ -61,12 +83,21 @@
             <a ng-show="end.type != 'ASM'" href="{{ end.url }}" target="_blank" title="Abrir en otra ventana">{{ end.url }}</a>
             <p ng-show="end.type == 'ASM'">ASM</p>
         </td>
-        <td>{{ end.firstErrorDate  | date:'dd-MM-yy HH:mm:ss'}}</td>
-        <td><a href="https://httpstatuses.com/" target="_blank" title="Abrir error">{{ end.httpCode }}</a></td>
+        <td>{{ end.firstErrorDate  | date:'medium' }}
+                <!-- Trigger the modal with a button -->
+                <!-- <button type="button" ng-show="end.firstErrorDate != null" class="btn btn-info btn-lg" ng-click='showModal()'>Detalles</button> -->
+        </td>
+        <td><a href="https://httpstatuses.com/" target="_blank" title="Ver documentacion">{{ end.httpCode }}</a></td>
         <td style="font-weight: bold">
             <p ng-show="end.isOK" style="color: green">OK</p>
             <p ng-show="!end.isOK" style="color: red">ERROR</p>
         </td>
+        <td><button type="button" ng-show="end.type == 'ASM'" class="btn btn-info btn-xs" ng-click="refreshBPT(end.ip, end.port)">Refrescar</button>
+        </td>
       </tr>
     </tbody>
+
+    Current time is: <span my-current-time="format"></span>
+    <hr/>
+
  </table>
