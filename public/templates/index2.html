@@ -1,8 +1,32 @@
-<p ng-show="enpoints.length == 0">No hay datos para mostrar</p>
+<!-- <p ng-show="enpoints.length == 0">No hay datos para mostrar</p> -->
 
-<H1>Monitor de ambientes Amdocs</H1>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+ <div class="container-fluid">
+   <div class="navbar-header">
+     <a class="navbar-brand" href>Monitor de ambientes Amdocs</a>
+   </div>
+   <ul class="nav navbar-nav navbar-right">
+     <li class="active"><a href>Bienvenido </a></li>
+      <li>
+        <a ng-href="#notification" title="Dismissible popover" data-toggle="popover" data-trigger="focus" 
+          data-content="Click anywhere in the document to close this popover">
+          <span class="glyphicon glyphicon-bell"></span> {{ errorCount }} 
+        </a>
+      </li>
+     <li class="active"><a href="">Salir</a></li>
+   </ul>
+ </div>
+</nav>
 
-<!-- <p>Last update on {{ new Date() | date:'DD dd-MM-yy HH:mm:ss'}} </p> -->
+<!--<H1>Monitor de ambientes Amdocs</H1>-->
+<div class="well well-sm">
+  <table width="100%">
+    <tr>
+      <td align="left">Ultima actualizacion: <span>{{ date | date:'medium'}} </span></td>
+      <td align="right">Fecha: <span my-current-time="format"></span></td>
+    </tr>
+  </table>
+</div>
 
 <form>
     <div class="form-group">
@@ -13,9 +37,7 @@
     </div>
 </form>
 
-<div class="alert alert-info" ng-hide="buscador == ''">
-  <!-- <p>Sort Type: {{ sortType }}</p>
-  <p>Sort Reverse: {{ sortReverse }}</p> -->
+<div class="alert alert-warning" ng-hide="buscador == ''">
   <p >Filtrado por  {{ buscador }} </p>
 </div>
 
@@ -87,17 +109,18 @@
                 <!-- Trigger the modal with a button -->
                 <!-- <button type="button" ng-show="end.firstErrorDate != null" class="btn btn-info btn-lg" ng-click='showModal()'>Detalles</button> -->
         </td>
-        <td><a href="https://httpstatuses.com/" target="_blank" title="Ver documentacion">{{ end.httpCode }}</a></td>
+        <td><a ng-show="end.httpCode !=0" href="{{'https://httpstatuses.com/' + end.httpCode}}" target="_blank" title="Ver documentacion">{{ end.httpCode }}</a></td>
         <td style="font-weight: bold">
             <p ng-show="end.isOK" style="color: green">OK</p>
             <p ng-show="!end.isOK" style="color: red">ERROR</p>
         </td>
-        <td><button type="button" ng-show="end.type == 'ASM'" class="btn btn-info btn-xs" ng-click="refreshBPT(end.ip, end.port)">Refrescar</button>
+        <td style="align: center">
+            <button type="button" ng-show="end.type == 'ASM'" class="btn btn-default btn-xs"
+                    ng-click="refreshBPT(end.name, end.ip, end.port)"
+                    title="Esta tarea puede tardar mas de 1 minutos. Uselo con cuidado"
+                    data-toggle="tooltip" data-placement="bottom">Refrescar</button>
+            <p ng-show=" refreshStatusList[end.name] != ''">{{ refreshStatusList[end.name] }}</p>
         </td>
       </tr>
     </tbody>
-
-    Current time is: <span my-current-time="format"></span>
-    <hr/>
-
  </table>

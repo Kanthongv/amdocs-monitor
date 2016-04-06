@@ -10,35 +10,58 @@ app.controller('indexController', function($scope, $http, $interval) {
 
 	$scope.lastError    = 'NA';
 
+	$scope.date = new Date();  //para mostrar la ultima actualizacion
+
+	$scope.refreshStatusList = {} //Refresh BTP status
+
+	$scope.errorCount = 0; //Error count to show in status bar as notification
+
 	//Firt load
 	load_enpoints();
 
 	//Repeat every n milli
 	$interval(function() {
 		load_enpoints();
+
+		$scope.date = new Date();
 	},10000);
 
 	function load_enpoints(){
-		//$http.get('http://localhost:9090/list').success(function(data){
 		$http.get('/list').success(function(data){
 			  $scope.endpoints = data;
+
+			  $scope.errorCount = loadErroneus(data).length;
 	    });
     };
 
-	$scope.showModal = function() {
-
+	function loadErroneus(jsonData) {
+		var errors = []
+		for (var value in jsonData) {
+			if (!jsonData[value].isOK) {
+				errors.push(jsonData[value]);
+			}
+		}
+		console.log("Error count: " + errors.length);
+		return errors;
 	}
 
-	$scope.refreshBPT = function(ip, port) {
+	$scope.refreshBPT = function(name, ip, port) {
 		var url = "http://" + ip + ":" + port  + "/BPT/proxy/BPTOperations";
 		var message = { 'url': url }
 		console.log("Ip: " + ip + ", port: " + port);
+
+		$scope.refreshStatusList[name] = "Actualizando BPT"
 
 		var config = { headers: {'Content-Type': 'application/json'} }
 
 		$http.post('/refreshBPT', message, config).success(function(data) {
 			  //$scope.endpoints = data;
 			  console.log('BPT refreshed!');
+			  if (data == "OK") {
+			  $scope.refreshStatusList[name] = "Actualizado!"
+		  } else {
+			   $scope.refreshStatusList[name] = ":("
+		  }
 	    });
 	}
 

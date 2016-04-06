@@ -1,0 +1,6 @@
+            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:amd="http://www.movistar.com.ar/ws/schema/amdocs">
+            <soapenv:Header/>
+            <soapenv:Body>
+            <amd:refresh/>
+            </soapenv:Body>
+            </soapenv:Envelope>

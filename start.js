@@ -6,13 +6,13 @@ resources
 */
 var request = require('request');
 var express = require('express');
-var fs = require("fs");
 
 var dbMod = require('./db-module');
 var front = require('./front-end');
 var cron = require('./crontask');
 
 var api = require('./api');
+var fs = require('./file');
 
 app = express();
 
@@ -20,11 +20,11 @@ const SERVER_PORT = 9090;
 const OK = 'OK';
 const ERROR = 'ERROR';
 
-const REFRESH_TIME = 30;
+//const REFRESH_TIME = 30;
 
 response = '';
 
-var urls = [ {name:'Internet', type: 'none', url:'http://www.google.com'} ,
+var urls = [ {name:'Internet', type: 'none', env:'NA', url:'http://www.google.com'} ,
 
              {name:'DESA', type: 'none', env:'DESA', url:'http://10.0.0.234:7100/sbconsole'},
              {name:'DESA - ASM', type: 'ASM', env:'DESA', url:'http://10.0.0.234:7101/ASM/proxy/asm_PX', ip:'10.0.0.234', port:'7101'},
@@ -81,15 +81,6 @@ var urls2 = [ {name:'Internet', type: 'none', url:'http://www.google.com'} ,
 
 app.use(express.static(__dirname + '/public'));
 
-var asmReq = '';
-fs.readFile('asm/generarTicket.xml', function (err, data) {
-    if (err) {
-        return console.error(err);
-    }
-    console.log("Read ASM request: " + data.toString());
-    asmReq = data.toString();
-});
-
 app.listen(SERVER_PORT, function() {
     console.log('Listening on port: ' + SERVER_PORT);
 
@@ -97,47 +88,24 @@ app.listen(SERVER_PORT, function() {
     dbMod.DBConnect();
     console.log("DB Connected!");
 
+    asmReq = fs.getASMRequest();
+    refreshBPTReq = fs.getRefreshBPTRequest();
+
     handleInserts();
 });
 
-app.get('/data', function(req, res) {
-     res.writeHead(200, {'Content-Type': 'text/html', 'refresh': REFRESH_TIME});
 
-     console.log("HTTP Get Called!");
+// app.get('/#', function(req, res) {
+//     res.redirect('public/index.html');
 
-     dbMod.find()
+// });
 
-     res.end(front.buildHTML(response));
-});
+// app.get('#', function(req, res) {
+//     res.redirect('public/index.html/#');
 
-app.get('/#', function(req, res) {
-    res.redirect('public/index.html');
+// });
 
-});
-/*
-    Server mservice
-    Return a list of endpoints result
-*/
-app.get('/list', function(req, res) {
-     res.writeHead(200, {'Content-Type': 'application/json'});
 
-     console.log("/List: Server endpoint called");
-
-     dbMod.find()
-
-     if (response == '') {
-         console.log(">> Response value no set yet");
-     }
-     res.end(JSON.stringify(response));
-});
-
-//Manual Refresh task
-app.get('/refresh', function(req, res) {
-     console.log("Refresh Called!");
-
-     handlerHttpRequestCron(req, res);
-     res.redirect('/');
-});
 
 
 //Send request to url
@@ -168,7 +136,7 @@ function send_request(url, typeParam) {
 
 function send_ASM_request(urlParam, typeParam) {
     //Fill body
-    request.post({url:urlParam, body: asmReq}, function (error, response_call, body) {
+    request.post({ url:urlParam, body: asmReq}, function (error, response_call, body) {
       var status = false;
       var code = 0;
       //console.log("Response: " + body.toString());
@@ -195,7 +163,8 @@ function send_ASM_request(urlParam, typeParam) {
 function handleInserts() {
     //Loop
     for (var value in urls) {
-        dbMod.insert(urls[value].name,  urls[value].ip,  urls[value].port,  urls[value].url, false, urls[value].type, urls[value].env);
+        dbMod.insert(urls[value].name,  urls[value].ip,  urls[value].port,  urls[value].url, false, 
+        urls[value].type, urls[value].env);
     }
 };
 
@@ -208,8 +177,9 @@ exports.handlerHttpRequestCron = function () {
     }
 };
 
-
+// API CALL
 // ===========================================
+app.get('/list', api.list)
 
 var bodyParser = require('body-parser')
 
@@ -221,61 +191,11 @@ app.use(bodyParser.json()); // for parsing application/json
 
 app.post('/refreshBPT', api.refreshBPT)
 
-/*
 
-app.post('/refreshBPT', function(req, res) {
-     console.log("UpdateBPT Called!");
+//Manual Refresh task
+app.get('/refresh', function(req, res) {
+     console.log("Refresh Called!");
 
-     //      { "url": "http://www.google.com"}
-
-
-     //Check valid mime type
-     console.log("MIME Type: " + req.get('Content-Type'));
-     if (!req.is('application/json')) {
-         res.end("Invalid MIME type, only valid type is 'application/json'")
-         return
-     }
-
-     console.log("Body: " + req.body)
-
-     //The body is already a JSON object
-
-     var endpoint = req.body.url
-     if (typeof endpoint == 'undefined' || endpoint == null) {
-         console.log("JSON invalid");
-         res.end("JSON invalid");
-         return
-     }
-
-     var refreshBody =
-            '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:amd="http://www.movistar.com.ar/ws/schema/amdocs">'
-            + '<soapenv:Header/>'
-            + '<soapenv:Body>'
-            + '<amd:refresh/>'
-            + '</soapenv:Body>'
-            + '</soapenv:Envelope>'
-
-     request(
-         { url: endpoint, //URL to hit
-           method: 'POST', //Specify the method
-           headers: { //We can define headers too
-              'Content-Type': 'text/xml',
-           },
-           body: refreshBody //Set the body as a string
-         }
-         , function(error, response_call, body) {
-               var status = false;
-               var code = 0;
-               if (!error && response_call.statusCode == 200) {
-                    status = true;
-                    code = 200;
-               } if (!error) {
-                    code = response_call.statusCode;
-               } else {
-                    status = false;
-               }
-               console.log("URL " + endpoint + " is:" + status + " code: " + code + " \n Body:" + body)
-        });
-
-    res.end("Refresh request has been sent to: " + endpoint);
-});*/
+     handlerHttpRequestCron(req, res);
+     res.redirect('/');
+});
