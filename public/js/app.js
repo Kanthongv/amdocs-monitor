@@ -1,7 +1,7 @@
 //creamos el modulo y lo asignamos a app, para evitar escribir
 //cada vez angular.module("app"); que sería el getter
 //angular.module("app", []); es el setter
-var app = angular.module("app", ['ngRoute']);
+var app = angular.module("app", ['ngRoute', 'ngAnimate', 'ui.bootstrap', 'angularMoment']);
 
 //realizamos la configuración del enrutado dependiendo de la url
 //con el objeto $routeProvider haciendo uso de when

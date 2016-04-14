@@ -26,52 +26,50 @@ response = '';
 
 var urls = [ {name:'Internet', type: 'none', env:'NA', url:'http://www.google.com'} ,
 
-             {name:'DESA', type: 'none', env:'DESA', url:'http://10.0.0.234:7100/sbconsole'},
-             {name:'DESA - ASM', type: 'ASM', env:'DESA', url:'http://10.0.0.234:7101/ASM/proxy/asm_PX', ip:'10.0.0.234', port:'7101'},
+             {name:'DESA', type: 'OSB', env:'DESA', url:'http://10.0.0.234:7100/sbconsole', ip:'10.0.0.234', port:'7100'},
 
-             {name:'TEST', type: 'none', env:'TEST', url:'http://10.0.0.234:8100/sbconsole'},
-             {name:'TEST - ASM', type: 'ASM', env:'TEST', url:'http://10.0.0.234:8101/ASM/proxy/asm_PX', ip:'10.0.0.234', port:'8101'},
+             {name:'TEST', type: 'OSB', env:'TEST', url:'http://10.0.0.234:8100/sbconsole', ip:'10.0.0.234', port:'8100'},
 
-             {name:'UAT_A', type: 'none', env:'UAT', url:'http://localhost:7011/sbconsole'},
-             {name:'UAT_A - ASM', type: 'ASM', env:'UAT', url:'http://localhost:7012/ASM/proxy/asm_PX', ip:'localhost', port:'7012'},
+             {name:'UAT_A - 3', type: 'OSB', env:'UAT', url:'http://localhost:7011/sbconsole', ip:'localhost', port:'7011'},
+             {name:'UAT_A - 3 - ASM', type: 'ASM', env:'UAT', url:'http://localhost:7012/ASM/proxy/asm_PX', ip:'localhost', port:'7012'},
 
-             {name:'UAT_B', type: 'none', env:'UAT', url:'http://localhost:11079/sbconsole'},
-             {name:'UAT_B - ASM', type: 'ASM', env:'UAT', url:'http://localhost:11080/ASM/proxy/asm_PX', ip:'localhost', port:'11080'},
+             {name:'UAT_B - 8', type: 'OSB', env:'UAT', url:'http://localhost:11079/sbconsole', ip:'localhost', port:'11079'},
+             {name:'UAT_B - 8 - ASM', type: 'ASM', env:'UAT', url:'http://localhost:11080/ASM/proxy/asm_PX', ip:'localhost', port:'11080'},
 
-             {name:'UAT_D', type: 'none', env:'UAT', url:'http://localhost:7041/sbconsole'},
-             {name:'UAT_D - ASM', type: 'ASM', env:'UAT', url:'http://localhost:7042/ASM/proxy/asm_PX', ip:'localhost', port:'7042'},
+             {name:'UAT_D - 6', type: 'OSB', env:'UAT', url:'http://localhost:7041/sbconsole', ip:'localhost', port:'7041'},
+             {name:'UAT_D - 6 - ASM', type: 'ASM', env:'UAT', url:'http://localhost:7042/ASM/proxy/asm_PX', ip:'localhost', port:'7042'},
 
-             {name:'UAT_E', type: 'none', env:'UAT', url:'http://localhost:7030/sbconsole'},
-             {name:'UAT_E - ASM', type: 'ASM', env:'UAT', url:'http://localhost:7031/ASM/proxy/asm_PX', ip:'localhost', port:'7031'},
+             {name:'UAT_E - 4', type: 'OSB', env:'UAT', url:'http://localhost:7030/sbconsole', ip:'localhost', port:'7030'},
+             {name:'UAT_E - 4 - ASM', type: 'ASM', env:'UAT', url:'http://localhost:7031/ASM/proxy/asm_PX', ip:'localhost', port:'7031'},
 
-             {name:'PET WLS OBC  - ADM', type: 'none', env:'PET', url:'http://localhost:3002/sbconsole'},
+             {name:'PET WLS OBC  - ADM', type: 'OSB', env:'PET', url:'http://localhost:3002/sbconsole', ip:'localhost', port:'3002'},
              {name:'PET WLS OBC  - ASM', type: 'ASM', env:'PET', url:'http://localhost:3003/ASM/proxy/asm_PX', ip:'localhost', port:'3003'},
 
-             {name:'PET WLS ONC  - ADM', type: 'none', env:'PET', url:'http://localhost:3006/sbconsole'},
+             {name:'PET WLS ONC  - ADM', type: 'OSB', env:'PET', url:'http://localhost:3006/sbconsole', ip:'localhost', port:'3006'},
              {name:'PET WLS ONC  - ASM', type: 'ASM', env:'PET', url:'http://localhost:3007/ASM/proxy/asm_PX', ip:'localhost', port:'3007'},
 
-             {name:'PET WLN ONC  - ADM', type: 'none', env:'PET', url:'http://localhost:3004/sbconsole'},
+             {name:'PET WLN ONC  - ADM', type: 'OSB', env:'PET', url:'http://localhost:3004/sbconsole', ip:'localhost', port:'3004'},
              {name:'PET WLN ONC  - ASM', type: 'ASM', env:'PET', url:'http://localhost:3005/ASM/proxy/asm_PX', ip:'localhost', port:'3005'},
 
-             {name:'PET WLN OBC  - ADM', type: 'none', env:'PET', url:'http://localhost:3000/sbconsole'},
+             {name:'PET WLN OBC  - ADM', type: 'OSB', env:'PET', url:'http://localhost:3000/sbconsole', ip:'localhost', port:'3000'},
              {name:'PET WLN OBC  - ASM', type: 'ASM', env:'PET', url:'http://localhost:3001/ASM/proxy/asm_PX', ip:'localhost', port:'3001'},
 
-             {name:'PET ASYNC - ADM', type: 'none', env:'PET', url:'http://localhost:3010/sbconsole'},
+             {name:'PET ASYNC - ADM', type: 'OSB', env:'PET', url:'http://localhost:3010/sbconsole', ip:'localhost', port:'3010'},
              {name:'PET ASYNC - ASM', type: 'ASM', env:'PET', url:'http://localhost:3011/ASM/proxy/asm_PX', ip:'localhost', port:'3011'},
 
-             {name:'PET COLIVING - ADM', type: 'none', env:'PET', url:'http://localhost:3014/sbconsole'},
+             {name:'PET COLIVING - ADM', type: 'OSB', env:'PET', url:'http://localhost:3014/sbconsole', ip:'localhost', port:'3014'},
              {name:'PET COLIVING - ASM', type: 'ASM', env:'PET', url:'http://localhost:3015/ASM/proxy/asm_PX', ip:'localhost', port:'3015'},
 
-             {name:'PET SYNC - SOA', type: 'none', env:'PET', url:'http://localhost:3020/em'},
-             {name:'PET ASYNC - SOA', type: 'none', env:'PET', url:'http://localhost:3030/em'},
+             {name:'PET SYNC - SOA', type: 'SOA', env:'PET', url:'http://localhost:3020/em', ip:'localhost', port:'3020'},
+             {name:'PET ASYNC - SOA', type: 'SOA', env:'PET', url:'http://localhost:3030/em', ip:'localhost', port:'3030'},
 
-             {name:'DESA - SOA', type: 'none', env:'DESA', url:'http://10.0.0.234:7000/em'},
-             {name:'TEST - SOA', type: 'none', env:'TEST', url:'http://10.0.0.234:8000/em'},
+             {name:'DESA - SOA', type: 'SOA', env:'DESA', url:'http://10.0.0.234:7000/em', ip:'localhost', port:'7000'},
+             {name:'TEST - SOA', type: 'SOA', env:'TEST', url:'http://10.0.0.234:8000/em', ip:'localhost', port:'8000'},
 
-             {name:'UAT_A - SOA', type: 'none', env:'UAT', url:'http://localhost:7015/em'},
-             {name:'UAT_B - SOA', type: 'none', env:'UAT', url:'http://localhost:11011/em'},
-             {name:'UAT_D - SOA', type: 'none', env:'UAT', url:'http://localhost:7051/em'},
-             {name:'UAT_E - SOA', type: 'none', env:'UAT', url:'http://localhost:7032/em'},
+             {name:'UAT_A - 3 - SOA', type: 'SOA', env:'UAT', url:'http://localhost:7015/em', ip:'localhost', port:'7015'},
+             {name:'UAT_B - 8 - SOA', type: 'SOA', env:'UAT', url:'http://localhost:11011/em', ip:'localhost', port:'11011'},
+             {name:'UAT_D - 6 - SOA', type: 'SOA', env:'UAT', url:'http://localhost:7051/em', ip:'localhost', port:'7051'},
+             {name:'UAT_E - 4 - SOA', type: 'SOA', env:'UAT', url:'http://localhost:7032/em', ip:'localhost', port:'7032'},
            ];
 
 var urls2 = [ {name:'Internet', type: 'none', url:'http://www.google.com'} ,
@@ -163,7 +161,7 @@ function send_ASM_request(urlParam, typeParam) {
 function handleInserts() {
     //Loop
     for (var value in urls) {
-        dbMod.insert(urls[value].name,  urls[value].ip,  urls[value].port,  urls[value].url, false, 
+        dbMod.insert(urls[value].name,  urls[value].ip,  urls[value].port,  urls[value].url, true, 
         urls[value].type, urls[value].env);
     }
 };

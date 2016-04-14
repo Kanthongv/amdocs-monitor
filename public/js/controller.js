@@ -15,6 +15,7 @@ app.controller('indexController', function($scope, $http, $interval) {
 	$scope.refreshStatusList = {} //Refresh BTP status
 
 	$scope.errorCount = 0; //Error count to show in status bar as notification
+	$scope.errorsJson = []
 
 	//Firt load
 	load_enpoints();
@@ -42,6 +43,7 @@ app.controller('indexController', function($scope, $http, $interval) {
 			}
 		}
 		console.log("Error count: " + errors.length);
+		errorsJson = errors
 		return errors;
 	}
 
@@ -55,17 +57,40 @@ app.controller('indexController', function($scope, $http, $interval) {
 		var config = { headers: {'Content-Type': 'application/json'} }
 
 		$http.post('/refreshBPT', message, config).success(function(data) {
-			  //$scope.endpoints = data;
-			  console.log('BPT refreshed!');
-			  if (data == "OK") {
-			  $scope.refreshStatusList[name] = "Actualizado!"
-		  } else {
-			   $scope.refreshStatusList[name] = ":("
-		  }
+			console.log('BPT refreshed!');
+			if (data == "OK") {
+				$scope.refreshStatusList[name] = "Actualizado!"
+			} else {
+				$scope.refreshStatusList[name] = ":("
+			}
 	    });
 	}
 
-	$scope.format = 'M/d/yy h:mm:ss a';
+	$scope.format = 'h:mm:ss a';
+
+	// //UIB
+	// $scope.status = {
+ //      isopen: false
+ //    };
+
+ //    $scope.toggled = function(open) {
+ //      console.log('Dropdown is now: ', open);
+ //    };
+
+ //    $scope.toggleDropdown = function($event) {
+ //      $event.preventDefault();
+ //      $event.stopPropagation();
+ //      $scope.status.isopen = !$scope.status.isopen;
+ //    };
+
+ //    $scope.appendToEl = angular.element(document.querySelector('#dropdown-long-content'));
+
+ 	//array to hold the alerts to be displayed on the page
+	$scope.alerts = [];
+ 	$scope.closeAlert = function(index) {
+	    $scope.alerts.splice(0);
+ 	};
+
 }) // Register the 'myCurrentTime' directive factory method.
     // We inject $interval and dateFilter service since the factory method is DI.
     .directive('myCurrentTime', ['$interval', 'dateFilter',

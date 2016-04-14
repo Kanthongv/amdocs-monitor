@@ -1,0 +1,9 @@
+
+/* 
+http://www.w3schools.com/cssref/sel_link.asp
+http://www.w3schools.com/cssref/tryit.asp?filename=trycss_sel_link_more2 
+http://www.w3schools.com/css/tryit.asp?filename=trycss_link_advanced*/
+a.myLink:link, a.myLink:visited, a.myLink.hover, a.myLink:active {
+    color: black;
+    text-decoration: none;
+}

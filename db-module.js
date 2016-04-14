@@ -22,20 +22,33 @@ exports.update = function(urlParam, isOKParam, codeParam) {
     //db.update(JSON.parse('{  "url" : " ' + url + '"} '), JSON.parse('{ "$set": { "isOK": "'   + isOK + '" }}') , function (err, newDoc) {   // Callback is optional
     console.log("Updating: " + urlParam + ", " + isOKParam);
 
-    var errorDate = new Date();
-    var updateJson = null
-    if (!isOKParam) {
-            updateJson = { $set: { isOK: isOKParam, firstErrorDate: errorDate.toJSON(), httpCode: codeParam }}
-    } else {
-            updateJson = { $set: { isOK: isOKParam, firstErrorDate: null, httpCode: codeParam }}
-    }
-    db.update({ url : urlParam }, updateJson, {} , function (err, newDoc) {   // Callback is optional
+    var updateJson = {}
 
-      // newDoc is the newly inserted document, including its _id
-      // newDoc has no key called notToBeSaved since its value was undefined
-          console.log("Error: " + err);
-          console.log("Updated rows: " + newDoc);
-    });
+    if (!isOKParam) {
+            var errorDate = new Date();
+           
+            db.find( { $and: [{url:urlParam}, {isOK:false}] }).exec(function (err, docs) {
+              console.log("Consult lenght: " + docs.length)
+              if (docs.length == 1) {
+                updateJson = { $set: { isOK: false, httpCode: codeParam }}
+              } else {
+                updateJson = { $set: { isOK: false, firstErrorDate: errorDate.toJSON(), httpCode: codeParam }}
+              }
+
+              db.update({ url : urlParam }, updateJson, {} , function (err, newDoc) {   // Callback is optional
+                    console.log("Error: " + err);
+                    console.log("Updated rows: " + newDoc);
+              });
+            });
+
+            //updateJson = { $set: { isOK: false, firstErrorDate: errorDate.toJSON(), httpCode: codeParam }}
+    } else {
+            updateJson = { $set: { isOK: true, httpCode: codeParam }}
+            db.update({ url : urlParam }, updateJson, {} , function (err, newDoc) {   // Callback is optional
+                console.log("Error: " + err);
+                console.log("Updated rows: " + newDoc);
+            });
+    }
 }
 
 //Find rows that were OK in the calling

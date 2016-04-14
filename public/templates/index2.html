@@ -6,37 +6,66 @@
      <a class="navbar-brand" href>Monitor de ambientes Amdocs</a>
    </div>
    <ul class="nav navbar-nav navbar-right">
-     <li class="active"><a href>Bienvenido </a></li>
-      <li>
-        <a ng-href="#notification" title="Dismissible popover" data-toggle="popover" data-trigger="focus" 
-          data-content="Click anywhere in the document to close this popover">
-          <span class="glyphicon glyphicon-bell"></span> {{ errorCount }} 
-        </a>
+      <li ng-show="errorCount > 0" class="active">
+          <p class="navbar-text" style="color: red">
+              <span class="glyphicon glyphicon-bell glyphicon-align-lef" aria-hidden="true"></span>
+              {{ errorCount }} errores encontrados
+          </p>
       </li>
-     <li class="active"><a href="">Salir</a></li>
+
+<!--       <li class="active">
+            <a  popover-placement="bottom" popover-animation="true" 
+              uib-popover="Se encontraron {{ errorCount }} errores" type="button"
+              popover-title="Notificaciones" 
+              class="active">{{ errorCount }}</a>
+      </li> -->
+<!--      <li>
+        
+        <span uib-dropdown on-toggle="toggled(open)">
+          <a href id="simple-dropdown" uib-dropdown-toggle>
+            {{ errorCount }}
+          </a>
+          <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="simple-dropdown">
+            <li ng-repeat="choice in errorsJson">
+              <a href>{{choice}}</a>
+            </li>
+          </ul>
+        </span>
+      </li> -->
+      <!-- <li class="active"><a href="">Salir</a></li> -->
    </ul>
  </div>
 </nav>
 
 <!--<H1>Monitor de ambientes Amdocs</H1>-->
 <div class="well well-sm">
-  <table width="100%">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border: 0px; margin-bottom: 0">
     <tr>
-      <td align="left">Ultima actualizacion: <span>{{ date | date:'medium'}} </span></td>
-      <td align="right">Fecha: <span my-current-time="format"></span></td>
+      <td align="left">
+        <span class="glyphicon glyphicon-refresh glyphicon-align-lef" aria-hidden="true"></span>
+        <span>{{ date | date:'h:mm:ss a'}} </span></td>
+      <td align="right"> 
+        <span class="glyphicon glyphicon-time glyphicon-align-lef" aria-hidden="true"></span>
+        <span my-current-time="format"></span></td>
     </tr>
   </table>
 </div>
 
+<uib-alert ng-show="errorCount==0" type="success" 
+  style="text-align: center">Todo esta en order!</uib-alert>
+
 <form>
     <div class="form-group">
       <div class="input-group">
-        <div class="input-group-addon"><i class="fa fa-search"></i></div>
+        <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
         <input type="text" class="form-control" placeholder="Filtrar" ng-model="buscador">
-      </div>
+
+        <!-- <input type="button" ng-click="buscador=''" class="fa fa-search" > -->
+        
+        <span class="input-group-addon"><a href="" ng-click="buscador=''" class="glyphicon glyphicon-remove myLink"></a></span>
     </div>
 </form>
-
+<br>
 <div class="alert alert-warning" ng-hide="buscador == ''">
   <p >Filtrado por  {{ buscador }} </p>
 </div>
@@ -73,7 +102,6 @@
             <span ng-show="sortType == 'name' && sortReverse" class="fa fa-caret-up"></span>
           </a>
         </td>
-        <!-- <td>Nombre</td> -->
         <td>
           <a href="" ng-click="sortType = 'env'; sortReverse = !sortReverse">
             Ambiente
@@ -81,7 +109,13 @@
             <span ng-show="sortType == 'env' && sortReverse" class="fa fa-caret-up"></span>
           </a>
         </td>
-        <!-- <td>Ambiente</td> -->
+        <td>
+         <a href="" ng-click="sortType = 'type'; sortReverse = !sortReverse">
+            Tipo
+            <span ng-show="sortType == 'type' && !sortReverse" class="fa fa-caret-down"></span>
+            <span ng-show="sortType == 'type' && sortReverse" class="fa fa-caret-up"></span>
+          </a>
+        </td>
         <td>URL</td>
         <td>Ultimo Error</td>
         <td>Codigo HTTP</td>
@@ -93,7 +127,8 @@
             <span ng-show="sortType == 'isOK' && sortReverse" class="fa fa-caret-up"></span>
           </a>
         </td>
-        <td>BTP</td>
+        <!-- <td>BTP</td> -->
+        <td></td>
       </tr>
     </thead>
     <tbody>
@@ -101,26 +136,65 @@
       <tr ng-repeat="end in endpoints | orderBy:sortType:sortReverse | filter: buscador">
         <td>{{ end.name }}</td>
         <td>{{ end.env }}</td>
+        <td>{{ end.type }}</td>
         <td>
-            <a ng-show="end.type != 'ASM'" href="{{ end.url }}" target="_blank" title="Abrir en otra ventana">{{ end.url }}</a>
+ <!--            <a ng-show="end.type != 'ASM'" href="{{ end.url }}" target="_blank" title="Abrir en otra ventana">{{ end.url }}</a> -->
+            <p ng-show="end.type != 'ASM'">{{ end.url }}</p>
             <p ng-show="end.type == 'ASM'">ASM</p>
         </td>
-        <td>{{ end.firstErrorDate  | date:'medium' }}
+        <td><span ng-show="!end.isOK">
+             <time title="{{ end.firstErrorDate | amDateFormat: 'DD-MMMM-YYYY, h:mm:ss a'}}" am-time-ago="end.firstErrorDate"></time>
+            <!-- <a href=""><span class="glyphicon glyphicon-plus glyphicon-align-lef" aria-hidden="true"></span></a> -->
                 <!-- Trigger the modal with a button -->
                 <!-- <button type="button" ng-show="end.firstErrorDate != null" class="btn btn-info btn-lg" ng-click='showModal()'>Detalles</button> -->
+            </span>
         </td>
         <td><a ng-show="end.httpCode !=0" href="{{'https://httpstatuses.com/' + end.httpCode}}" target="_blank" title="Ver documentacion">{{ end.httpCode }}</a></td>
         <td style="font-weight: bold">
             <p ng-show="end.isOK" style="color: green">OK</p>
             <p ng-show="!end.isOK" style="color: red">ERROR</p>
         </td>
-        <td style="align: center">
-            <button type="button" ng-show="end.type == 'ASM'" class="btn btn-default btn-xs"
+        <td style="align: center; vertical-align: center">
+ <!--            <button type="button" ng-show="end.type == 'ASM'" class="btn btn-default btn-xs"
                     ng-click="refreshBPT(end.name, end.ip, end.port)"
-                    title="Esta tarea puede tardar mas de 1 minutos. Uselo con cuidado"
-                    data-toggle="tooltip" data-placement="bottom">Refrescar</button>
+                    title="Actualizar BPT,esta tarea puede tardar mas de 1 minutos. Uselo con cuidado"
+                    data-toggle="tooltip" data-placement="bottom">
+                    <span class="glyphicon glyphicon-refresh glyphicon-align-lef" aria-hidden="true"></span>
+            </button> -->
+          <div ng-show="end.type == 'ASM'" >
+            <a class="myLink" href=""
+                    ng-click="refreshBPT(end.name, end.ip, end.port)"
+                    title="Actualizar BPT,esta tarea puede tardar mas de 1 minutos. Uselo con cuidado">
+                    <span class="glyphicon glyphicon-refresh glyphicon-align-lef" aria-hidden="true"></span>
+            </a>
             <p ng-show=" refreshStatusList[end.name] != ''">{{ refreshStatusList[end.name] }}</p>
+          </div>
+<!--         </td>
+        <td> -->
+          <div ng-show="end.type == 'OSB'">
+              <a class="myLink" href="{{'http://' + end.ip + ':' + end.port + '/console'}}" title="Weblogic" target="_blank">
+                <span class="glyphicon glyphicon-wrench glyphicon-align-lef" aria-hidden="true"></span>
+              </a>
+              &nbsp;
+              <a class="myLink"  href="{{'http://' + end.ip + ':' + end.port + '/sbconsole'}}" title="OSB" target="_blank">
+                <span class="glyphicon glyphicon-folder-open glyphicon-align-lef" aria-hidden="true"></span>     
+              </a>
+          </div>
+          <div ng-show="end.type == 'SOA'">
+              <a class="myLink" href="{{'http://' + end.ip + ':' + end.port + '/console'}}" title="Weblogic" target="_blank">
+                <span class="glyphicon glyphicon-wrench glyphicon-align-lef" aria-hidden="true"></span>
+              </a>
+              &nbsp;
+              <a class="myLink"  href="{{'http://' + end.ip + ':' + end.port + '/em'}}" title="EM" target="_blank">
+                <span class="glyphicon glyphicon-eye-open glyphicon-align-lef" aria-hidden="true"></span>     
+              </a>
+          </div>
         </td>
       </tr>
     </tbody>
  </table>
+<div class="well well-sm" style="text-align: center;">
+  <a href="http://10.0.0.118/mediawiki/index.php/OSB_Environments" target="_blank">Wiki-OSB</a>
+  <a href="http://amdocs.pragmaconsultores.net:10080/Infraestructura" target="_blank">Trac-Infra</a>
+  <a href="http://amdocs.pragmaconsultores.net:8080/archiva/" target="_blank">Archiva</a>
+</div>
