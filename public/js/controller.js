@@ -1,8 +1,3 @@
-//desde aquí hacemos uso del objeto app que es nuestro modulo
-//y de esta forma creamos un controlador, en este caso el controlador indexController,
-//como vemos, hacemos uso de scope y sencillamente creamos un array y colocamos
-//dos objetos dentro de él
-//app.controller("indexController", function indexController($scope){
 app.controller('indexController', function($scope, $http, $interval) {
 	$scope.sortType     = 'name'; // set the default sort type
 	$scope.sortReverse  = false;  // set the default sort order
@@ -67,23 +62,6 @@ app.controller('indexController', function($scope, $http, $interval) {
 	}
 
 	$scope.format = 'h:mm:ss a';
-
-	// //UIB
-	// $scope.status = {
- //      isopen: false
- //    };
-
- //    $scope.toggled = function(open) {
- //      console.log('Dropdown is now: ', open);
- //    };
-
- //    $scope.toggleDropdown = function($event) {
- //      $event.preventDefault();
- //      $event.stopPropagation();
- //      $scope.status.isopen = !$scope.status.isopen;
- //    };
-
- //    $scope.appendToEl = angular.element(document.querySelector('#dropdown-long-content'));
 
  	//array to hold the alerts to be displayed on the page
 	$scope.alerts = [];

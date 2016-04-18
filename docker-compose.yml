@@ -1,0 +1,29 @@
+nginx: 
+    build: ../nginx/
+    ports:
+     - "9999:9999"
+
+    links:
+        - amdocs_mon_a
+        - amdocs_mon_b
+
+amdocs_mon_a:
+    build: /home/ec2-user/docker/amdocs/
+    ports:
+     - "9090:9090"
+amdocs_mon_b:
+    build: /home/ec2-user/docker/amdocs/
+    ports:
+     - "9091:9091"
+
+  #  links:
+  #      - nginx2
+ 
+  #amdocs_monitor2:
+  #  build: .
+  #  ports:
+  #   - "9091:9090"
+  #  links:
+  #      - nginx2
+
+ 

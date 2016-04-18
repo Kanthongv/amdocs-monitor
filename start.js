@@ -20,8 +20,6 @@ const SERVER_PORT = 9090;
 const OK = 'OK';
 const ERROR = 'ERROR';
 
-//const REFRESH_TIME = 30;
-
 response = '';
 
 var urls = [ {name:'Internet', type: 'none', env:'NA', url:'http://www.google.com'} ,
@@ -60,8 +58,8 @@ var urls = [ {name:'Internet', type: 'none', env:'NA', url:'http://www.google.co
              {name:'PET COLIVING - ADM', type: 'OSB', env:'PET', url:'http://localhost:3014/sbconsole', ip:'localhost', port:'3014'},
              {name:'PET COLIVING - ASM', type: 'ASM', env:'PET', url:'http://localhost:3015/ASM/proxy/asm_PX', ip:'localhost', port:'3015'},
 
-             {name:'PET SYNC - SOA', type: 'SOA', env:'PET', url:'http://localhost:3020/em', ip:'localhost', port:'3020'},
-             {name:'PET ASYNC - SOA', type: 'SOA', env:'PET', url:'http://localhost:3030/em', ip:'localhost', port:'3030'},
+             {name:'PET ASYNC - SOA', type: 'SOA', env:'PET', url:'http://localhost:3020/em', ip:'localhost', port:'3020'},
+             {name:'PET SYNC - SOA', type: 'SOA', env:'PET', url:'http://localhost:3030/em', ip:'localhost', port:'3030'},
 
              {name:'DESA - SOA', type: 'SOA', env:'DESA', url:'http://10.0.0.234:7000/em', ip:'localhost', port:'7000'},
              {name:'TEST - SOA', type: 'SOA', env:'TEST', url:'http://10.0.0.234:8000/em', ip:'localhost', port:'8000'},
@@ -91,19 +89,6 @@ app.listen(SERVER_PORT, function() {
 
     handleInserts();
 });
-
-
-// app.get('/#', function(req, res) {
-//     res.redirect('public/index.html');
-
-// });
-
-// app.get('#', function(req, res) {
-//     res.redirect('public/index.html/#');
-
-// });
-
-
 
 
 //Send request to url

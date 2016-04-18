@@ -1,43 +1,19 @@
-<!-- <p ng-show="enpoints.length == 0">No hay datos para mostrar</p> -->
-
 <nav class="navbar navbar-inverse navbar-fixed-top">
  <div class="container-fluid">
    <div class="navbar-header">
      <a class="navbar-brand" href>Monitor de ambientes Amdocs</a>
    </div>
    <ul class="nav navbar-nav navbar-right">
-      <li ng-show="errorCount > 0" class="active">
-          <p class="navbar-text" style="color: red">
+      <li  class="active">
+          <p class="navbar-text" style="{{(errorCount == 0)?'color: #01DF3A':'color: red'}}">
               <span class="glyphicon glyphicon-bell glyphicon-align-lef" aria-hidden="true"></span>
-              {{ errorCount }} errores encontrados
+              {{ (errorCount==0)?'Todo esta en orden!': errorCount + ' errores encontrados' }}
           </p>
       </li>
-
-<!--       <li class="active">
-            <a  popover-placement="bottom" popover-animation="true" 
-              uib-popover="Se encontraron {{ errorCount }} errores" type="button"
-              popover-title="Notificaciones" 
-              class="active">{{ errorCount }}</a>
-      </li> -->
-<!--      <li>
-        
-        <span uib-dropdown on-toggle="toggled(open)">
-          <a href id="simple-dropdown" uib-dropdown-toggle>
-            {{ errorCount }}
-          </a>
-          <ul class="dropdown-menu" uib-dropdown-menu aria-labelledby="simple-dropdown">
-            <li ng-repeat="choice in errorsJson">
-              <a href>{{choice}}</a>
-            </li>
-          </ul>
-        </span>
-      </li> -->
-      <!-- <li class="active"><a href="">Salir</a></li> -->
-   </ul>
+    </ul>
  </div>
 </nav>
 
-<!--<H1>Monitor de ambientes Amdocs</H1>-->
 <div class="well well-sm">
   <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border: 0px; margin-bottom: 0">
     <tr>
@@ -67,7 +43,7 @@
 </form>
 <br>
 <div class="alert alert-warning" ng-hide="buscador == ''">
-  <p >Filtrado por  {{ buscador }} </p>
+  <p>Filtrado por '{{ buscador }}'</p>
 </div>
 
 <!-- Modal -->
@@ -87,7 +63,6 @@
         <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
       </div>
     </div>
-
   </div>
 </div>
 
@@ -144,9 +119,6 @@
         </td>
         <td><span ng-show="!end.isOK">
              <time title="{{ end.firstErrorDate | amDateFormat: 'DD-MMMM-YYYY, h:mm:ss a'}}" am-time-ago="end.firstErrorDate"></time>
-            <!-- <a href=""><span class="glyphicon glyphicon-plus glyphicon-align-lef" aria-hidden="true"></span></a> -->
-                <!-- Trigger the modal with a button -->
-                <!-- <button type="button" ng-show="end.firstErrorDate != null" class="btn btn-info btn-lg" ng-click='showModal()'>Detalles</button> -->
             </span>
         </td>
         <td><a ng-show="end.httpCode !=0" href="{{'https://httpstatuses.com/' + end.httpCode}}" target="_blank" title="Ver documentacion">{{ end.httpCode }}</a></td>
@@ -155,12 +127,6 @@
             <p ng-show="!end.isOK" style="color: red">ERROR</p>
         </td>
         <td style="align: center; vertical-align: center">
- <!--            <button type="button" ng-show="end.type == 'ASM'" class="btn btn-default btn-xs"
-                    ng-click="refreshBPT(end.name, end.ip, end.port)"
-                    title="Actualizar BPT,esta tarea puede tardar mas de 1 minutos. Uselo con cuidado"
-                    data-toggle="tooltip" data-placement="bottom">
-                    <span class="glyphicon glyphicon-refresh glyphicon-align-lef" aria-hidden="true"></span>
-            </button> -->
           <div ng-show="end.type == 'ASM'" >
             <a class="myLink" href=""
                     ng-click="refreshBPT(end.name, end.ip, end.port)"
@@ -169,8 +135,6 @@
             </a>
             <p ng-show=" refreshStatusList[end.name] != ''">{{ refreshStatusList[end.name] }}</p>
           </div>
-<!--         </td>
-        <td> -->
           <div ng-show="end.type == 'OSB'">
               <a class="myLink" href="{{'http://' + end.ip + ':' + end.port + '/console'}}" title="Weblogic" target="_blank">
                 <span class="glyphicon glyphicon-wrench glyphicon-align-lef" aria-hidden="true"></span>

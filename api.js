@@ -1,8 +1,6 @@
 var request = require('request');
 var dbMod = require('./db-module');
 
-var requestSync = require('urllib-sync').request;
-
 /*
   List the status info for each endpoint
 */
@@ -84,30 +82,4 @@ exports.refreshBPT = function(req, res) {
                }
         }
     );
-
-    // requestSync(
-    //     { url: endpoint, //URL to hit
-    //       method: 'POST', //Specify the method
-    //       headers: { //We can define headers too
-    //          'Content-Type': 'text/xml',
-    //       },
-    //       body: refreshBody //Set the body as a string
-    //    }
-    //    , function(error, response_call, body) {
-    //          var status = false;
-    //          var code = 0;
-    //          if (!error && response_call.statusCode == 200) {
-    //               status = true;
-    //               code = 200;
-    //          } if (!error) {
-    //               code = response_call.statusCode;
-    //          } else {
-    //               status = false;
-    //          }
-    //          console.log("URL " + endpoint + " is:" + status + " code: " + code + " \n Body:" + body)
-    //   });
-
-
-    //res.end("Refresh request has been sent to: " + endpoint);
-    //res.send('');
 }
