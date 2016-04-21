@@ -1,0 +1,10 @@
+{
+  "AWSEBDockerrunVersion": "1",
+  "Volumes": [
+    {
+      "HostDirectory": "/home/ec2-user/log",
+      "ContainerDirectory": "/usr/src/app/log"
+    }
+  ],
+  "Logging": "/home/ec2-user/eb-docker-log"
+}

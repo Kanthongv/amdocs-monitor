@@ -9,6 +9,6 @@ FROM node:4-onbuild
 
 #ADD . /usr/src/app/
 
-VOLUME ["/home/ec2-user/log", "/usr/src/app/log"]
+#VOLUME ["/home/ec2-user/log", "/usr/src/app/log"]
 
 EXPOSE 9090
