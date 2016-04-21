@@ -12,6 +12,16 @@ app.controller('indexController', function($scope, $http, $interval) {
 	$scope.errorCount = 0; //Error count to show in status bar as notification
 	$scope.errorsJson = []
 
+	$scope.envs = [
+		{name:"ASM"}, 
+		{name:"OSB"},
+		{name:"SOA"},
+		{name:"DESA"},
+		{name:"TEST"},
+		{name:"UAT"},
+		{name:"PET"}
+		]
+
 	//Firt load
 	load_enpoints();
 

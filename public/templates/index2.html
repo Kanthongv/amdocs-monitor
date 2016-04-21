@@ -1,7 +1,7 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
  <div class="container-fluid">
    <div class="navbar-header">
-     <a class="navbar-brand" href>Monitor de ambientes Amdocs Publico</a>
+     <p class="navbar-brand">Monitor de ambientes Amdocs Publico</p>
    </div>
    <ul class="nav navbar-nav navbar-right">
       <li  class="active">
@@ -27,18 +27,15 @@
   </table>
 </div>
 
-<uib-alert ng-show="errorCount==0" type="success" 
-  style="text-align: center">Todo esta en order!</uib-alert>
+<uib-alert ng-show="errorCount==0" type="success" style="text-align: center">Todo esta en order!</uib-alert>
 
 <form>
     <div class="form-group">
       <div class="input-group">
         <div class="input-group-addon"><i class="glyphicon glyphicon-search"></i></div>
         <input type="text" class="form-control" placeholder="Filtrar" ng-model="buscador">
-
-        <!-- <input type="button" ng-click="buscador=''" class="fa fa-search" > -->
-        
-        <span class="input-group-addon"><a href="" ng-click="buscador=''" class="glyphicon glyphicon-remove myLink"></a></span>
+        <span class="input-group-addon"><a href="" ng-click="buscador=''" 
+            class="glyphicon glyphicon-remove myLink"></a></span>
     </div>
 </form>
 <br>
@@ -46,11 +43,10 @@
   <p>Filtrado por '{{ buscador }}'</p>
 </div>
 
-<!-- Modal -->
+<!-- -- Modal 
 <div id="myModal" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
-    <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -64,7 +60,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 <!-- Filtrar: <input type="text" ng-model="buscador"  /> -->
 <table class="table table-bordered table-striped">
@@ -94,7 +90,6 @@
         <td>URL</td>
         <td>Ultimo Error</td>
         <td>Codigo HTTP</td>
-        <!-- <td>Estado</td> -->
         <td>
           <a href="" ng-click="sortType = 'isOK'; sortReverse = !sortReverse">
             Estado
@@ -102,26 +97,33 @@
             <span ng-show="sortType == 'isOK' && sortReverse" class="fa fa-caret-up"></span>
           </a>
         </td>
-        <!-- <td>BTP</td> -->
         <td></td>
       </tr>
     </thead>
     <tbody>
-      <!-- <tr ng-repeat="end in endpoints | orderBy:sortType:sortReverse | filter:buscador"> -->
       <tr ng-repeat="end in endpoints | orderBy:sortType:sortReverse | filter: buscador">
         <td>{{ end.name }}</td>
         <td>{{ end.env }}</td>
         <td>{{ end.type }}</td>
         <td>
- <!--            <a ng-show="end.type != 'ASM'" href="{{ end.url }}" target="_blank" title="Abrir en otra ventana">{{ end.url }}</a> -->
             <p ng-show="end.type != 'ASM'">{{ end.url }}</p>
             <p ng-show="end.type == 'ASM'">ASM</p>
         </td>
         <td><span ng-show="!end.isOK">
              <time title="{{ end.firstErrorDate | amDateFormat: 'DD-MMMM-YYYY, h:mm:ss a'}}" am-time-ago="end.firstErrorDate"></time>
+ <!--             {{ end.lastError }} 
+              uib-popover="{{ end.lastError }}" popover-trigger="mouseenter" popover-title="{{ end.url }}"
+ -->
+<!--               <button uib-popover="{{ end.lastError }}" popover-trigger="mouseenter" popover-title="{{ end.url }}" tooltip-append-to-body="true">
+                 Detalles
+              </button> -->
+
+              <span uib-tooltip="{{ end.lastError }}" class="glyphicon glyphicon-search" tooltip-append-to-body="true" tooltip-class="customClass"></span>
+
             </span>
         </td>
-        <td><a ng-show="end.httpCode !=0" href="{{'https://httpstatuses.com/' + end.httpCode}}" target="_blank" title="Ver documentacion">{{ end.httpCode }}</a></td>
+        <td><a ng-show="end.httpCode !=0" href="{{'https://httpstatuses.com/' + end.httpCode}}" target="_blank" title="Ver documentacion">{{ end.httpCode }}</a>
+        </td>
         <td style="font-weight: bold">
             <p ng-show="end.isOK" style="color: green">OK</p>
             <p ng-show="!end.isOK" style="color: red">ERROR</p>

@@ -1,5 +1,11 @@
+'use strict'
+
 var request = require('request');
+var gl = require('./global');
 var dbMod = require('./db-module');
+var logger = require('./logger');
+var fs = require('./file');
+
 
 /*
   List the status info for each endpoint
@@ -7,14 +13,14 @@ var dbMod = require('./db-module');
 exports.list =  function(req, res) {
      res.writeHead(200, {'Content-Type': 'application/json'});
 
-     console.log("/List: Server endpoint called");
+     logger.log.debug("/List: Server endpoint called");
 
      dbMod.find()
 
-     if (response == '') {
-         console.log(">> Response value no set yet");
+     if (gl.response == '') {
+         logger.log.info(">> Response value no set yet");
      }
-     res.end(JSON.stringify(response));
+     res.end(JSON.stringify(gl.response));
 }
 
 /*
@@ -22,45 +28,38 @@ exports.list =  function(req, res) {
     requisito : MIME TYPE = application/json
 */
 exports.refreshBPT = function(req, res) {
-     console.log("UpdateBPT Called!");
+     logger.log.debug("UpdateBPT Called!");
 
      /*
         { "url": "http://www.google.com"}
      */
 
      //Check valid mime type
-     console.log("MIME Type: " + req.get('Content-Type'));
+     logger.log.debug("MIME Type: " + req.get('Content-Type'));
      if (!req.is('application/json')) {
          res.end("Invalid MIME type, only valid type is 'application/json'")
          return
      }
 
-     console.log("Body: " + req.body)
+     logger.log.debug("Body: " + req.body)
 
      //The body is already a JSON object
 
      var endpoint = req.body.url
      if (typeof endpoint == 'undefined' || endpoint == null) {
-         console.log("JSON invalid");
+         logger.log.error("JSON invalid");
+
          res.end("JSON invalid");
          return
      }
 
-     // var refreshBody =
-     //        '<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:amd="http://www.movistar.com.ar/ws/schema/amdocs">'
-     //        + '<soapenv:Header/>'
-     //        + '<soapenv:Body>'
-     //        + '<amd:refresh/>'
-     //        + '</soapenv:Body>'
-     //        + '</soapenv:Envelope>'
-
      var requ = request(
          { url: endpoint, //URL to hit
-           method: 'POST', //Specify the method
-           headers: { //We can define headers too
+           method: 'POST',
+           headers: {
               'Content-Type': 'text/xml',
            },
-           body: refreshBPTReq //Set the body as a string
+           body: fs.getRefreshBPTRequest() //Set the body as a string
          }
          , function(error, response_call, body) {
                var status = false;
@@ -73,7 +72,7 @@ exports.refreshBPT = function(req, res) {
                } else {
                     status = false;
                }
-               console.log("URL " + endpoint + " is:" + status + " code: " + code + " \n Body:" + body)
+               logger.log.debug("URL " + endpoint + " is:" + status + " code: " + code + " \n Body:" + body)
 
                if (error) {
                    res.end("ERROR");

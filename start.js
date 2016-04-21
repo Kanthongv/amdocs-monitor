@@ -1,3 +1,5 @@
+'use strict'
+
 /*
 resources
     http://www.cronmaker.com/
@@ -14,15 +16,29 @@ var cron = require('./crontask');
 var api = require('./api');
 var fs = require('./file');
 
-app = express();
+var gl = require('./global');
+
+var logger = require('./logger');
+
+var escape = require('escape-html');
+
+var app = express();
+var bodyParser = require('body-parser')
+
+//var multer = require('multer'); // v1.0.5
+//var upload = multer(); // for parsing multipart/form-data
+
+app.use(bodyParser.json()); // for parsing application/json
+//app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 const SERVER_PORT = 9090;
 const OK = 'OK';
 const ERROR = 'ERROR';
 
-response = '';
+//response = '';
 
 var urls = [ {name:'Internet', type: 'none', env:'NA', url:'http://www.google.com'} ,
+             {name:'Custom error test', type: 'none', env:'NA', url:'http://localhost:9090/custerror'},
 
              {name:'DESA', type: 'OSB', env:'DESA', url:'http://10.0.0.234:7100/sbconsole', ip:'10.0.0.234', port:'7100'},
 
@@ -78,14 +94,14 @@ var urls2 = [ {name:'Internet', type: 'none', url:'http://www.google.com'} ,
 app.use(express.static(__dirname + '/public'));
 
 app.listen(SERVER_PORT, function() {
-    console.log('Listening on port: ' + SERVER_PORT);
+    logger.log.info('Listening on port: ' + SERVER_PORT);
 
     //Connect to DB
     dbMod.DBConnect();
-    console.log("DB Connected!");
+    logger.log.info("DB Connected!");
 
-    asmReq = fs.getASMRequest();
-    refreshBPTReq = fs.getRefreshBPTRequest();
+    fs.getASMRequest();
+    fs.getRefreshBPTRequest();
 
     handleInserts();
 });
@@ -112,17 +128,18 @@ function send_request(url, typeParam) {
       } else {
         status = false;
       }
-      //console.log("URL is " + status)
-      dbMod.update(url, status, code);
+
+      logger.log.debug("URL is " + status)
+      dbMod.update(url, status, code, buildErrorText(error, response_call, body));
     })
 }
 
 function send_ASM_request(urlParam, typeParam) {
     //Fill body
-    request.post({ url:urlParam, body: asmReq}, function (error, response_call, body) {
+    request.post({ url:urlParam, body: fs.getASMRequest()}, function (error, response_call, body) {
       var status = false;
       var code = 0;
-      //console.log("Response: " + body.toString());
+ 
       if (!error && response_call.statusCode == 200) {
             //Scrap for response text
             if (body.indexOf('m:Token') > -1) {
@@ -135,11 +152,42 @@ function send_ASM_request(urlParam, typeParam) {
             code = response_call.statusCode;
        } else {
             status = false;
+            logger.log.error("Response send_ASM_request: " + (body)?body:'');
        }
 
-      //console.log("URL is " + status)
-      dbMod.update(urlParam, status, code);
+      //logger.log.info("URL is " + status)
+      dbMod.update(urlParam, status, code, buildErrorText(error, response_call, body));
     })
+}
+
+function buildErrorText(error, response_call, body) {
+    var returnText = ''
+
+    logger.log.debug('Error: ' + JSON.stringify(error));
+    //logger.log.debug('response_call: ' + response_call);
+    //logger.log.debug('body: ' + body);
+
+    if (error) {
+      returnText = "Codigo: " + error.code + " numero: " + error.errno + " systema: " + error.syscall;
+    }
+
+    // if (body) {
+    //   returnText = returnText + 'Response: ' + body // + escape(refreshBPTReq)
+    // }
+
+
+
+    //returnText = body //(error !== null && error !== undefined)? JSON.stringify(error.)):'' + ' - ' 
+
+     // returnText = '' + (response_call !== null && (typeof response_call !== "undefined"))?response_call:'' + ' - ' + 
+     //             (body !== null && (typeof body !== "undefined"))?body:''
+
+    logger.log.info('Return text: ' + returnText);
+
+    //returnText = "{'ljf' } ldjl dlj dslfjsd lfj lajldf jlasdjf lsasdjf lkjl jsdlf jaslsdjf lsaj flsdjkfl sdjal fsdl fjlsdlsd fldsjdlj ljdslfjsd ljsdldslsld jldsj lj l "
+
+                              //(error === undefined)?'':error + (response_call === undefined)?'':response_call + (body === undefined)?'':body
+    return returnText;
 }
 
 //Insert first rows at init
@@ -147,7 +195,10 @@ function handleInserts() {
     //Loop
     for (var value in urls) {
         dbMod.insert(urls[value].name,  urls[value].ip,  urls[value].port,  urls[value].url, true, 
-        urls[value].type, urls[value].env);
+        urls[value].type, urls[value].env,
+        //Empty String
+        "NA"
+        );
     }
 };
 
@@ -163,22 +214,18 @@ exports.handlerHttpRequestCron = function () {
 // API CALL
 // ===========================================
 app.get('/list', api.list)
-
-var bodyParser = require('body-parser')
-
-//var multer = require('multer'); // v1.0.5
-//var upload = multer(); // for parsing multipart/form-data
-
-app.use(bodyParser.json()); // for parsing application/json
-//app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-
 app.post('/refreshBPT', api.refreshBPT)
-
 
 //Manual Refresh task
 app.get('/refresh', function(req, res) {
-     console.log("Refresh Called!");
+     logger.log.info("Refresh Called!");
 
      handlerHttpRequestCron(req, res);
      res.redirect('/');
+});
+
+app.get('/custerror', function(req, res) {
+     logger.log.info("Error Called!");
+
+     res.status(500).send('Something broke!');
 });

@@ -1,32 +1,45 @@
-var fs = require("fs");
+'use strict'
 
-asmReq = ''
-refreshBPTReq = ''
+var fs = require("fs");
+var logger = require('./logger');
+
+var asmReq = ''
+var refreshBPTReq = ''
 
 exports.getASMRequest = function () {
     if (asmReq == '') {
-        fs.readFile('asm/generarTicket.xml', function (err, data) {
+        logger.log.debug("Loading ASM Request file");
+        fs.readFile('./asm/generarTicket.xml', function (err, data) {
             if (err) {
-                return console.error(err);
+                logger.log.debug(err)
+                return '';
             }
-            console.log("Read ASM request: " + data.toString());
+            logger.log.debug("Read ASM request: " + data.toString());
+
             asmReq = data.toString();
         });
+    } else {
+        logger.log.debug("Found already loaded asmReq!");
     }
-    //console.log("Read ASM request: " + asmReq);
+
     return asmReq;
 }
 
 exports.getRefreshBPTRequest = function () {
     if (refreshBPTReq == '') {
-        fs.readFile('asm/refreshBPT.xml', function (err, data) {
+        logger.log.debug("Loading refreshBPT file");
+        fs.readFile('./asm/refreshBPT.xml', function (err, data) {
             if (err) {
-                return console.error(err);
+                logger.log.debug(err)
+                return '';
             }
-            console.log("Read refreshBPT request: " + data.toString());
+            logger.log.debug("Read refreshBPT request: " + data.toString());
             refreshBPTReq = data.toString();
         });
     }
     //console.log("Read ASM request: " + asmReq);
     return refreshBPTReq;
 }
+
+// exports.asmReq = asmReq;
+// exports.refreshBPTReq = refreshBPTReq;
