@@ -230,3 +230,8 @@ app.get('/custerror', function(req, res) {
 
      res.status(500).send('Something broke!');
 });
+
+app.get('/healthCheck', function(req, res) {
+     logger.log.info("healthCheck called.");
+     res.status(200).send('OK');
+});
