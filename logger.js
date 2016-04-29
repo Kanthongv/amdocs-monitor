@@ -1,6 +1,7 @@
 //https://github.com/trentm/node-bunyan
 
 var bunyan = require('bunyan');
+var config = require('./config/config.dev.json');
 
 var log = bunyan.createLogger({
     name: 'amdocs-monitor',
@@ -17,6 +18,6 @@ var log = bunyan.createLogger({
     }]
 	});
 
-log.level('debug');
+log.level(config.log_level);
 
 exports.log = log;

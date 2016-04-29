@@ -20,6 +20,8 @@ var gl = require('./global');
 
 var logger = require('./logger');
 
+var config = require('./config/config.dev.json');
+
 //var escape = require('escape-html');
 
 
@@ -95,6 +97,8 @@ var urls2 = [ {name:'Internet', type: 'none', url:'http://www.google.com'} ,
 app.use(express.static(__dirname + '/public'));
 
 app.listen(SERVER_PORT, function() {
+    logger.log.info('App Version: ' + config.app_version);
+    
     logger.log.info('Listening on port: ' + SERVER_PORT);
 
     //Connect to DB
@@ -176,14 +180,12 @@ function buildErrorText(error, response_call, body) {
     //   returnText = returnText + 'Response: ' + body // + escape(refreshBPTReq)
     // }
 
-
-
     //returnText = body //(error !== null && error !== undefined)? JSON.stringify(error.)):'' + ' - ' 
 
      // returnText = '' + (response_call !== null && (typeof response_call !== "undefined"))?response_call:'' + ' - ' + 
      //             (body !== null && (typeof body !== "undefined"))?body:''
 
-    logger.log.info('Return text: ' + returnText);
+    logger.log.debug('Return text: ' + returnText);
 
     //returnText = "{'ljf' } ldjl dlj dslfjsd lfj lajldf jlasdjf lsasdjf lkjl jsdlf jaslsdjf lsaj flsdjkfl sdjal fsdl fjlsdlsd fldsjdlj ljdslfjsd ljsdldslsld jldsj lj l "
 

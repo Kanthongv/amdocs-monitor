@@ -6,7 +6,6 @@ var dbMod = require('./db-module');
 var logger = require('./logger');
 var fs = require('./file');
 
-
 /*
   List the status info for each endpoint
 */
@@ -80,5 +79,5 @@ exports.refreshBPT = function(req, res) {
                    res.end("OK");
                }
         }
-    );
+    )
 }
