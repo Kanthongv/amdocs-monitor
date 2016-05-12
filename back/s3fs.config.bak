@@ -46,10 +46,9 @@ files:
             # Make sure it's mounted as the webapp user
             id=`id -u webapp`
 
-            #s3fs [your-bucket]:[/optional/path/in/bucket] [/path/on/filesystem] -o nonempty -o uid=$id -o gid=$id -o 
-            s3fs [amdocs-monitor]:[/log] [//home/ec2-user/s3log] -o nonempty -o uid=$id -o gid=$id -o
-
-            use_cache=/tmp -o allow_other
+            #s3fs [your-bucket]:[/optional/path/in/bucket] [/path/on/filesystem] -o nonempty -o uid=$id -o gid=$id -o use_cache=/tmp -o allow_other 
+            
+            s3fs [amdocs-monitor]:[/log] [//home/ec2-user/s3log] -o nonempty -o uid=$id -o gid=$id -o use_cache=/tmp -o allow_other
 
 commands:
     01_patch_s3fs:

@@ -11,15 +11,13 @@ exports.DBConnect = function() {
     db = new Datastore()
 }
 
-//exports.db = db;
-
 /*
  * Insert url row into DB 
  */
 exports.insert = function(nameParam, ipParam, portParam, urlParam, isOKParam, typeParam, envParam, lastErrorParam) {
     var dataJSON = { name: nameParam, ip: ipParam, port:portParam, url: urlParam, type: typeParam, 
         env: envParam, isOK: isOKParam, firstErrorDate: null, httpCode: 0, createdDate: new Date(),
-        lastError: lastErrorParam };
+        lastError: lastErrorParam }
     
     logger.log.debug("Inserting: " + JSON.stringify(dataJSON));
 
